@@ -24,6 +24,7 @@ namespace pryMeteorologiaLantieriLucas
             clsConexionBD.CargarTreeView(trvUbicaciones);
             // Configurar StatusStrip para mostrar selección
             clsConexionBD.ActualizarStatusStrip(trvUbicaciones, toolStripStatusLabel1);
+            clsConexionBD.CargarTemperaturas(trvUbicaciones, lstTemperaturas, dtpFecha.Value);
 
             // Seleccionar el primer nodo para mostrar por defecto en el StatusStrip
             if (trvUbicaciones.Nodes.Count > 0)
@@ -33,6 +34,18 @@ namespace pryMeteorologiaLantieriLucas
         private void stsSeleccionado_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
        
+        }
+
+        private void dtpFecha_ValueChanged(object sender, EventArgs e)
+        {
+            // Fuerza que se vuelva a seleccionar el nodo actual para recargar ListView
+            if (trvUbicaciones.SelectedNode != null)
+            {
+                // Esto disparará el AfterSelect y actualizará la tabla
+                TreeNode nodo = trvUbicaciones.SelectedNode;
+                trvUbicaciones.SelectedNode = null;
+                trvUbicaciones.SelectedNode = nodo;
+            }
         }
     }
 }

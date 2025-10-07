@@ -34,6 +34,10 @@
             this.trvUbicaciones = new System.Windows.Forms.TreeView();
             this.stsSeleccionado = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lstTemperaturas = new System.Windows.Forms.ListView();
+            this.lblTemperaturas = new System.Windows.Forms.Label();
+            this.tempMinima = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tempMaxima = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.stsSeleccionado.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,6 +64,7 @@
             this.dtpFecha.Size = new System.Drawing.Size(297, 36);
             this.dtpFecha.TabIndex = 2;
             this.dtpFecha.Value = new System.DateTime(2025, 10, 7, 18, 59, 35, 451);
+            this.dtpFecha.ValueChanged += new System.EventHandler(this.dtpFecha_ValueChanged);
             // 
             // lblUbicaciones
             // 
@@ -73,33 +78,69 @@
             // 
             // trvUbicaciones
             // 
+            this.trvUbicaciones.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.trvUbicaciones.Location = new System.Drawing.Point(32, 158);
             this.trvUbicaciones.Name = "trvUbicaciones";
-            this.trvUbicaciones.Size = new System.Drawing.Size(310, 284);
+            this.trvUbicaciones.Size = new System.Drawing.Size(310, 400);
             this.trvUbicaciones.TabIndex = 6;
             // 
             // stsSeleccionado
             // 
             this.stsSeleccionado.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.stsSeleccionado.Location = new System.Drawing.Point(0, 624);
+            this.stsSeleccionado.Location = new System.Drawing.Point(0, 616);
             this.stsSeleccionado.Name = "stsSeleccionado";
-            this.stsSeleccionado.Size = new System.Drawing.Size(800, 22);
+            this.stsSeleccionado.Size = new System.Drawing.Size(800, 30);
             this.stsSeleccionado.TabIndex = 7;
             this.stsSeleccionado.Text = "Seleccionado:";
             this.stsSeleccionado.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.stsSeleccionado_ItemClicked);
             // 
             // toolStripStatusLabel1
             // 
+            this.toolStripStatusLabel1.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(80, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(140, 25);
             this.toolStripStatusLabel1.Text = "Seleccionado:";
+            // 
+            // lstTemperaturas
+            // 
+            this.lstTemperaturas.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.tempMinima,
+            this.tempMaxima});
+            this.lstTemperaturas.Font = new System.Drawing.Font("Yu Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstTemperaturas.HideSelection = false;
+            this.lstTemperaturas.Location = new System.Drawing.Point(416, 158);
+            this.lstTemperaturas.Name = "lstTemperaturas";
+            this.lstTemperaturas.Size = new System.Drawing.Size(372, 242);
+            this.lstTemperaturas.TabIndex = 8;
+            this.lstTemperaturas.UseCompatibleStateImageBehavior = false;
+            // 
+            // lblTemperaturas
+            // 
+            this.lblTemperaturas.AutoSize = true;
+            this.lblTemperaturas.Font = new System.Drawing.Font("Yu Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTemperaturas.Location = new System.Drawing.Point(411, 128);
+            this.lblTemperaturas.Name = "lblTemperaturas";
+            this.lblTemperaturas.Size = new System.Drawing.Size(152, 27);
+            this.lblTemperaturas.TabIndex = 9;
+            this.lblTemperaturas.Text = "Temperaturas";
+            // 
+            // tempMinima
+            // 
+            this.tempMinima.Text = "Temp. Mínima";
+            // 
+            // tempMaxima
+            // 
+            this.tempMaxima.Text = "Temp. Máxima";
             // 
             // frmMeteorologia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.ClientSize = new System.Drawing.Size(800, 646);
+            this.Controls.Add(this.lblTemperaturas);
+            this.Controls.Add(this.lstTemperaturas);
             this.Controls.Add(this.stsSeleccionado);
             this.Controls.Add(this.trvUbicaciones);
             this.Controls.Add(this.lblUbicaciones);
@@ -124,5 +165,9 @@
         private System.Windows.Forms.TreeView trvUbicaciones;
         private System.Windows.Forms.StatusStrip stsSeleccionado;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ListView lstTemperaturas;
+        private System.Windows.Forms.Label lblTemperaturas;
+        private System.Windows.Forms.ColumnHeader tempMinima;
+        private System.Windows.Forms.ColumnHeader tempMaxima;
     }
 }

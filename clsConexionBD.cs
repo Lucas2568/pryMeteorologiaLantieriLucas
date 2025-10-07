@@ -136,5 +136,61 @@ namespace pryMeteorologiaLantieriLucas
                 treeView.SelectedNode = treeView.Nodes[0]; // Esto disparará AfterSelect
         }
 
+        public void CargarTemperaturas(TreeView treeView, ListView listView, DateTime fecha)
+        {
+            if (treeView == null || listView == null)
+                return;
+
+            // Suscribirse al evento AfterSelect
+            treeView.AfterSelect += (sender, e) =>
+            {
+                TreeNode nodo = e.Node;
+
+                // Solo procesar nodos de localidad (hijos)
+                if (nodo.Parent == null) return;
+
+                listView.Items.Clear();
+
+                int idLocalidad = Convert.ToInt32(nodo.Tag);
+
+                try
+                {
+                    using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+                    {
+                        conexion.Open();
+
+                        string sql = @"
+                    SELECT temp_min, temp_max
+                    FROM Temperaturas
+                    WHERE id_localidad = @idLoc
+                      AND CAST(fecha AS DATE) = @fecha";
+
+                        using (SqlCommand cmd = new SqlCommand(sql, conexion))
+                        {
+                            cmd.Parameters.AddWithValue("@idLoc", idLocalidad);
+                            cmd.Parameters.AddWithValue("@fecha", fecha.Date);
+
+                            using (SqlDataReader dr = cmd.ExecuteReader())
+                            {
+                                while (dr.Read())
+                                {
+                                    string tempMin = dr["temp_min"].ToString();
+                                    string tempMax = dr["temp_max"].ToString();
+
+                                    ListViewItem item = new ListViewItem(tempMin);
+                                    item.SubItems.Add(tempMax);
+
+                                    listView.Items.Add(item);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al cargar temperaturas: " + ex.Message);
+                }
+            };
+        }
     }
 }
