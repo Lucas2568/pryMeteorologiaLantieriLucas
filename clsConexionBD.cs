@@ -9,6 +9,7 @@ using System.Data.OleDb;
 using System.Windows.Forms;
 using System.Data;
 using System.Collections;
+using Guna.UI2.WinForms;
 
 namespace pryMeteorologiaLantieriLucas
 {
@@ -78,19 +79,24 @@ namespace pryMeteorologiaLantieriLucas
                     drProv.Close();
 
                     // 2️⃣ Traer todas las localidades de una vez
-                    string sqlLocalidades = "SELECT id_provincia, nombre_localidad FROM Localidades ORDER BY id_provincia, nombre_localidad";
+                    string sqlLocalidades = "SELECT id_localidad, id_provincia, nombre_localidad FROM Localidades ORDER BY id_provincia, nombre_localidad";
                     SqlCommand cmdLoc = new SqlCommand(sqlLocalidades, conexion);
                     SqlDataReader drLoc = cmdLoc.ExecuteReader();
 
                     while (drLoc.Read())
                     {
+                        int idLocalidad = Convert.ToInt32(drLoc["id_localidad"]);
                         int idProvincia = Convert.ToInt32(drLoc["id_provincia"]);
                         string nombreLocalidad = drLoc["nombre_localidad"].ToString();
 
-                        // Agregamos la localidad al nodo de su provincia
+                        // Creamos el nodo de localidad
+                        TreeNode nodoLocalidad = new TreeNode(nombreLocalidad);
+                        nodoLocalidad.Tag = idLocalidad; // 🔹 Asignamos el ID de la localidad
+
+                        // Agregamos al nodo de provincia correspondiente
                         if (dictProvincias.ContainsKey(idProvincia))
                         {
-                            dictProvincias[idProvincia].Nodes.Add(new TreeNode(nombreLocalidad));
+                            dictProvincias[idProvincia].Nodes.Add(nodoLocalidad);
                         }
                     }
 
@@ -136,12 +142,12 @@ namespace pryMeteorologiaLantieriLucas
                 treeView.SelectedNode = treeView.Nodes[0]; // Esto disparará AfterSelect
         }
 
-        public void CargarTemperaturas(TreeView treeView, ListView listView, DateTime fecha)
+        public void CargarTemperaturas(TreeView treeView, ListView listView, Guna2DateTimePicker dateTimePicker)
         {
-            if (treeView == null || listView == null)
+            if (treeView == null || listView == null || dateTimePicker == null)
                 return;
 
-            // Suscribirse al evento AfterSelect
+            // Suscribirse al evento AfterSelect solo una vez
             treeView.AfterSelect += (sender, e) =>
             {
                 TreeNode nodo = e.Node;
@@ -151,7 +157,15 @@ namespace pryMeteorologiaLantieriLucas
 
                 listView.Items.Clear();
 
+                // Verificamos que el nodo tenga un Tag con el id_localidad
+                if (nodo.Tag == null)
+                {
+                    MessageBox.Show("Este nodo no tiene asociado un id_localidad en el Tag.");
+                    return;
+                }
+
                 int idLocalidad = Convert.ToInt32(nodo.Tag);
+                DateTime fechaSeleccionada = dateTimePicker.Value.Date; // Solo la fecha, sin la hora
 
                 try
                 {
@@ -160,27 +174,44 @@ namespace pryMeteorologiaLantieriLucas
                         conexion.Open();
 
                         string sql = @"
-                    SELECT temp_min, temp_max
-                    FROM Temperaturas
-                    WHERE id_localidad = @idLoc
-                      AND CAST(fecha AS DATE) = @fecha";
+                SELECT temp_min, temp_max
+                FROM Temperaturas
+                WHERE id_localidad = @idLoc AND CAST(fecha AS DATE) = @fecha"; // Filtramos por fecha exacta
 
                         using (SqlCommand cmd = new SqlCommand(sql, conexion))
                         {
                             cmd.Parameters.AddWithValue("@idLoc", idLocalidad);
-                            cmd.Parameters.AddWithValue("@fecha", fecha.Date);
+                            cmd.Parameters.AddWithValue("@fecha", fechaSeleccionada);
 
                             using (SqlDataReader dr = cmd.ExecuteReader())
                             {
-                                while (dr.Read())
+                                // Configuramos el ListView
+                                listView.Items.Clear();
+                                listView.Columns.Clear();
+                                listView.View = View.Details;
+                                listView.FullRowSelect = true;
+                                listView.GridLines = true;
+
+                                // Definimos columnas
+                                listView.Columns.Add("Tipo", 120);
+                                listView.Columns.Add("Valor", 80);
+
+                                if (dr.Read()) // Si hay datos
                                 {
                                     string tempMin = dr["temp_min"].ToString();
                                     string tempMax = dr["temp_max"].ToString();
 
-                                    ListViewItem item = new ListViewItem(tempMin);
-                                    item.SubItems.Add(tempMax);
+                                    ListViewItem itemMin = new ListViewItem("Temp. Mínima");
+                                    itemMin.SubItems.Add(tempMin);
+                                    listView.Items.Add(itemMin);
 
-                                    listView.Items.Add(item);
+                                    ListViewItem itemMax = new ListViewItem("Temp. Máxima");
+                                    itemMax.SubItems.Add(tempMax);
+                                    listView.Items.Add(itemMax);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No hay temperaturas registradas para esta localidad en la fecha seleccionada.");
                                 }
                             }
                         }

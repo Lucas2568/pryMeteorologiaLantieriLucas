@@ -24,7 +24,7 @@ namespace pryMeteorologiaLantieriLucas
             clsConexionBD.CargarTreeView(trvUbicaciones);
             // Configurar StatusStrip para mostrar selección
             clsConexionBD.ActualizarStatusStrip(trvUbicaciones, toolStripStatusLabel1);
-            clsConexionBD.CargarTemperaturas(trvUbicaciones, lstTemperaturas, dtpFecha.Value);
+            clsConexionBD.CargarTemperaturas(trvUbicaciones, lstTemperaturas, dtpFecha);
 
             // Seleccionar el primer nodo para mostrar por defecto en el StatusStrip
             if (trvUbicaciones.Nodes.Count > 0)
