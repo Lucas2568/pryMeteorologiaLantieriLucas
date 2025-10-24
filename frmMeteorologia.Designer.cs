@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMeteorologia));
             this.lblFecha = new System.Windows.Forms.Label();
             this.dtpFecha = new Guna.UI2.WinForms.Guna2DateTimePicker();
             this.lblUbicaciones = new System.Windows.Forms.Label();
@@ -133,6 +134,7 @@
             this.Controls.Add(this.lblUbicaciones);
             this.Controls.Add(this.dtpFecha);
             this.Controls.Add(this.lblFecha);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMeteorologia";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Meteorologia";
